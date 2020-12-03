@@ -1,0 +1,51 @@
+//
+//  ItemDetail.swift
+//  iDine
+//
+//  Created by Michael Barabolak on 8/11/20.
+//  Copyright © 2020 Michael Barabolak. All rights reserved.
+//
+
+import SwiftUI
+
+struct ItemDetail: View {
+    
+    // Allows variable not to have a variable in code but set in environment 
+    @EnvironmentObject var order: Order
+    var item: MenuItem
+    
+    var body: some View {
+        VStack
+            {
+                ZStack (alignment: .bottomTrailing) { //for stacking items ontop of each other
+                    Image(item.mainImage) //main image
+                    Text("Photo: \(item.photoCredit)") // text for who gets the photo credit
+                        .padding(4) //adding padding around name
+                        .background(Color.black) // background color
+                        .font(.caption) // size of font
+                        .foregroundColor(.white) // color of font
+                        .offset(x: -5, y: -5) //offset from .bottomTrailing 
+                }
+                
+                Text(item.description) // name of image
+                .padding() // better for titles inside not main titles
+                
+                Button("Order This") {
+                    self.order.add(item: self.item)
+                }// order this
+                
+                Spacer() //spacing everything from bottom pushing everything to the top since VStack
+        }.navigationBarTitle(Text(item.name), displayMode: .inline)  //VStack makes display nicer
+       
+    }  // var body: some view
+} // struct ItemDetail: View
+
+struct ItemDetail_Previews: PreviewProvider {
+    static let order = Order()
+    
+    static var previews: some View {
+        NavigationView {
+            ItemDetail(item: MenuItem.example).environmentObject(order)
+        } //Navigation view
+    } //Static var previews
+} //struct ItemDetail_Previews
