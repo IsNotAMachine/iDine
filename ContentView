@@ -1,0 +1,54 @@
+//
+//  ContentView.swift
+//  iDine
+//
+//  Created by Michael Barabolak on 8/11/20.
+//  Copyright © 2020 Michael Barabolak. All rights reserved.
+//
+
+import SwiftUI
+
+struct ContentView: View {
+    //Creates menu block with for look that repeats what's inside
+    let menu = Bundle.main.decode([MenuSection].self, from: "menu.json")
+
+    
+    var body: some View {
+        
+        NavigationView{
+            List{
+                //looking at the section name in menu.json for titles
+                ForEach(menu){ section in
+                    Section(header: Text(section.name)) {
+                    //Looking at the names of each item
+                    ForEach(section.items) { item in
+                        ItemRow(item: item)
+                    } // ForEach items
+                    } //section header
+                } // ForEach menu
+            }//LIST
+            .navigationBarTitle("Menu") //Navigation title
+            .listStyle(GroupedListStyle()) //making grouped list into different style
+        } //navigation view
+        
+       /*
+        //Creates a displacement to navigation view (large space above list)
+        NavigationView{
+        // Creates a list of items to show
+            List {
+                ForEach(menu){ section in 
+                    Text("Hello, World!")
+                    Text("Hello, World!")
+                    Text("Hello, World!")
+                } // for each
+            }.navigationBarTitle("Menu") //Modifies the title of the list (closing list
+        } // NavigationView
+ */
+    } //View
+} // struct ContentView
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
