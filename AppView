@@ -1,0 +1,39 @@
+//
+//  AppView.swift
+//  iDine
+//
+//  Created by Michael Barabolak on 8/12/20.
+//  Copyright © 2020 Michael Barabolak. All rights reserved.
+//
+
+import SwiftUI
+
+struct AppView: View {
+    var body: some View {
+       
+        //Creating tabs within the app
+        TabView{
+            //creates instance of content view
+            ContentView()
+                .tabItem{
+                    Image(systemName: "list.dash")
+                    Text("Menu")
+            }//contentview
+            
+            //creates instance of order view
+            OrderView()
+                .tabItem{
+                    Image(systemName: "square.and.pencil")
+                    Text("Order")
+            }//tabitem
+        } // tabview
+    }
+}
+
+struct AppView_Previews: PreviewProvider {
+    static let order = Order()
+    
+    static var previews: some View {
+        AppView()
+    }
+}
