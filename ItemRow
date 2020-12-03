@@ -1,0 +1,56 @@
+//
+//  ItemRow.swift
+//  iDine
+//
+//  Created by Michael Barabolak on 8/11/20.
+//  Copyright © 2020 Michael Barabolak. All rights reserved.
+//
+
+import SwiftUI
+
+struct ItemRow: View {
+    
+    //Assigning colors to each item if it has certain restrictions D = dairy V = vegetarian N = nuts
+    static let colors: [String: Color] = ["D": .purple, "G": .black, "N": .red, "S": .blue, "V": .green]
+    
+    var item: MenuItem
+    
+    var body: some View {
+        
+        //Navigation link when pressing item on menu 
+        NavigationLink(destination: ItemDetail(item:item)){
+            //Horizontal stacking
+            HStack{
+                Image(item.thumbnailImage)
+                    .clipShape(Circle()) //making image a circle
+                    .overlay(Circle().stroke(Color.blue, lineWidth: 2)) //making a gray border of image
+                // verticle stack
+                VStack(alignment: .leading) { //aligning items
+                    Text(item.name) //name of item
+                        .font(.headline) //chunky font
+                    Text("$\(item.price)")
+                }.layoutPriority(1) //VStack showing full names of foods on menu no ...
+                
+                Spacer() //forcing restriction text away from the rest of the items in HStack
+                
+                //Looking at each item and saying what the restrictions are project 4/14
+                ForEach(item.restrictions, id: \.self) { restriction in
+                    Text(restriction) // showing what restrictions
+                        .font(.caption) //changing font
+                        .fontWeight(.black) //making font bold
+                        .padding(5) // separating each restriction
+                        .background(Self.colors[restriction, default: .black]) //setting background colors
+                        .clipShape(Circle()) // shape of colors
+                        .foregroundColor(.white) // color of font
+                    
+                    } // ForEach
+                } // HStack stacking items to show
+            }// navigation link
+        } // var body: some View {
+} // struct ItemRow: View {
+
+struct ItemRow_Previews: PreviewProvider {
+    static var previews: some View {
+        ItemRow(item: MenuItem.example)
+    }
+}
