@@ -1,0 +1,58 @@
+//
+//  OrderView.swift
+//  iDine
+//
+//  Created by Michael Barabolak on 8/11/20.
+//  Copyright © 2020 Michael Barabolak. All rights reserved.
+//
+
+import SwiftUI
+
+struct OrderView: View {
+    
+    @EnvironmentObject  var order: Order
+    
+    var body: some View {
+        
+        //Creating a list navigation view
+        NavigationView {
+            //Creating list to show order items
+            List{
+                //filling the item name and price horizontally for each item put in order
+                Section{
+                    ForEach(order.items) { item in
+                        HStack{
+                            Text(item.name)
+                            Spacer()
+                            Text("$\(item.price)")
+                        } // HStack
+                    }// forEach
+                    .onDelete(perform: deleteItems)
+                } // section
+                
+                Section{
+                    NavigationLink(destination: CheckoutView()){
+                        Text("Place Order")
+                    }//Navigation link
+                } // section
+                    .disabled(order.items.isEmpty) // doesn't let you check out if order is empty 
+            } // list
+            .navigationBarTitle("Order")
+            .listStyle(GroupedListStyle()) // styling
+            .navigationBarItems(trailing: EditButton()) //edit button to delete items
+        } // navigation view
+    } //body
+    
+    //function to remove items
+    func deleteItems(at offsets: IndexSet){
+        order.items.remove(atOffsets: offsets)
+    } // func delete items
+}
+
+struct OrderView_Previews: PreviewProvider {
+    static let order = Order()
+    
+    static var previews: some View {
+        OrderView().environmentObject(order)
+    }
+}
