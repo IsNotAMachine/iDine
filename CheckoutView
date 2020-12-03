@@ -1,0 +1,86 @@
+//
+//  CheckoutView.swift
+//  iDine
+//
+//  Created by Michael Barabolak on 8/12/20.
+//  Copyright © 2020 Michael Barabolak. All rights reserved.
+//
+
+import SwiftUI
+
+struct CheckoutView: View {
+    //shares with all views on entire app
+    @EnvironmentObject var order: Order
+    
+    static let paymentTypes = ["Cash", "Credit Card", "iDine Points"]
+    static let tipAmounts = [10, 15, 20, 25, 0]
+    
+    @State private var paymentType = 0
+    @State private var addLoyaltyDetails = false
+    @State private var loyaltyNumber = ""
+    @State private var tipAmount = 1
+    @State private var showingPaymentAlert = false
+    
+    var totalPrice: Double{
+        let total = Double(order.total)
+        let tipValue = total / 100 * Double(Self.tipAmounts[tipAmount])
+        return total + tipValue
+        
+    }// totalPrice
+    var body: some View {
+        //creating a form instead of vstack
+        Form{
+            Section(header: Text("Payment")){
+                //asking how are they going to pay creating spinning wheel
+                // $paymentType updates the type that is used
+                Picker("How do you want to pay?", selection: $paymentType){
+                    ForEach(0 ..< Self.paymentTypes.count){
+                        Text(Self.paymentTypes[$0])
+                    }//foreach
+                } //picker
+                
+                //makes a prompt to add text the .animation makes the text field open smoothly
+                Toggle(isOn: $addLoyaltyDetails.animation()){
+                    Text("Add iDine loyalty card")
+                }//loyalty details
+                
+                if addLoyaltyDetails{
+                    //placeholder for text
+                    TextField("Enter your iDine ID", text: $loyaltyNumber)
+                } //if add loyalty details
+            }//section
+            
+            //creating tip section
+            Section(header: Text("Add a tip?")){
+                Picker("Percentage:", selection: $tipAmount){
+                    ForEach(0 ..< Self.tipAmounts.count) {
+                        Text("\(Self.tipAmounts[$0])%")
+                    }// for each
+                }//picker
+                .pickerStyle(SegmentedPickerStyle()) //makes it segmented for the choices
+            }//section
+            
+            //creating the total header
+            Section(header:Text("Total: $\(totalPrice, specifier: "%.2f")").font(.largeTitle)){
+                Button("Confirm Order"){
+                    self.showingPaymentAlert.toggle()
+                } // button
+            } //section
+        
+        }//form
+            .navigationBarTitle(Text("Payment"), displayMode: .inline)
+            //adding alert that shows up 
+            .alert(isPresented: $showingPaymentAlert){
+                Alert(title: Text("Order confirmed"), message: Text("Your total was $\(totalPrice, specifier: "%.2f") - Thank you!"), dismissButton: .default(Text("Okay")))
+        }//.alert
+    } // view
+} //checkoutview
+
+struct CheckoutView_Previews: PreviewProvider {
+    
+    static let order = Order()
+    
+    static var previews: some View {
+        CheckoutView().environmentObject(order)
+    }
+}
